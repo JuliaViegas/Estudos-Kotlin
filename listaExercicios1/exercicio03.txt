@@ -1,0 +1,17 @@
+Minha previsão:
+val a = int
+val b = double
+val c = string
+val d = char
+val e = boolean
+val f = erro?
+
+Resposta correta:
+Int
+Double
+String
+Char
+Boolean
+Long
+
+Na minha previsão, eu errei a val b (pensei que fosse float, mas na verdade é double) e a val f (não sabia que o tipo Long se declarava assim, então pensei que daria erro)
