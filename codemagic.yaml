@@ -1,0 +1,51 @@
+workflows:
+  build_apk:
+    name: Build Android APK (assembleRelease)
+    max_build_duration: 120
+    environment:
+      vars:
+        ANDROID_KEYSTORE_BASE64:
+          description: "Keystore codificada em base64 (adicionar como variável segura no Codemagic)"
+          secure: true
+        ANDROID_KEYSTORE_PASSWORD:
+          secure: true
+        ANDROID_KEYSTORE_ALIAS:
+          secure: true
+        ANDROID_KEYSTORE_ALIAS_PASSWORD:
+          secure: true
+    machine:
+      image: ubuntu-22.04
+      android:
+        components:
+          - build-tools;33.0.0
+          - platform-tools
+          - platforms;android-33
+    cache:
+      - ~/.gradle
+      - ~/.android/build-cache
+    scripts:
+      - name: Prepare Gradle
+        script: |
+          echo "Grant execute to gradlew"
+          chmod +x ./gradlew
+      - name: Decode keystore (optional)
+        script: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "Decoding keystore to ./keystores/keystore.jks"
+            mkdir -p ./keystores
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > ./keystores/keystore.jks
+            chmod 600 ./keystores/keystore.jks
+          else
+            echo "ANDROID_KEYSTORE_BASE64 not set; building without keystore file. If you want a signed APK set the secure variable in Codemagic."
+          fi
+      - name: Build release APK
+        script: |
+          echo "Assembling release APK"
+          # If you have signingConfigs in your Gradle that read properties, you can pass them via -P
+          ./gradlew assembleRelease --no-daemon
+    artifacts:
+      - app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients:
+          - ""
