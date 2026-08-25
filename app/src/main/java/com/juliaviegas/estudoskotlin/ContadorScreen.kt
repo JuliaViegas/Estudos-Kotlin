@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -41,7 +42,7 @@ fun ContadorScreen() {
             Text(
                 text = "${count.value}",
                 style = MaterialTheme.typography.displayLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Row(
@@ -49,15 +50,17 @@ fun ContadorScreen() {
             ) {
                 OutlinedButton(
                     onClick = { if (count.value > 0) count.value = count.value - 1 },
-                    enabled = count.value > 0
+                    enabled = count.value > 0,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                 ) {
-                    Text(text = "–")
+                    Text(text = "–", color = MaterialTheme.colorScheme.onSecondary)
                 }
 
                 Button(
-                    onClick = { count.value = count.value + 1 }
+                    onClick = { count.value = count.value + 1 },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(text = "+")
+                    Text(text = "+", color = MaterialTheme.colorScheme.onPrimary)
                 }
             }
         }
@@ -67,7 +70,7 @@ fun ContadorScreen() {
 @Preview(showBackground = true)
 @Composable
 fun ContadorPreview() {
-    MaterialTheme {
+    com.juliaviegas.estudoskotlin.ui.theme.EstudosKotlinTheme {
         ContadorScreen()
     }
 }
