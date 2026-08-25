@@ -2,53 +2,15 @@ workflows:
   build_apk:
     name: Build Android Release APK
     max_build_duration: 120
-    instance_type: linux.medium
-
-    environment:
-      vars:
-        ANDROID_KEYSTORE_BASE64:
-          secure: true
-        ANDROID_KEYSTORE_PASSWORD:
-          secure: true
-        ANDROID_KEYSTORE_ALIAS:
-          secure: true
-        ANDROID_KEYSTORE_ALIAS_PASSWORD:
-          secure: true
-
-    cache:
-      paths:
-        - ~/.gradle
-        - ~/.android/build-cache
 
     scripts:
       - name: Prepare Gradle
         script: |
           chmod +x ./gradlew
 
-      - name: Decode keystore (optional)
-        script: |
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "Decoding keystore to ./keystores/keystore.jks"
-            mkdir -p ./keystores
-            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > ./keystores/keystore.jks
-            chmod 600 ./keystores/keystore.jks
-          else
-            echo "ANDROID_KEYSTORE_BASE64 not set; building unsigned (release will be unsigned)."
-          fi
-
       - name: Build release APK
         script: |
-          ./gradlew clean assembleRelease --no-daemon \
-            -Pandroid.injected.signing.store.file=./keystores/keystore.jks \
-            -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
-            -Pandroid.injected.signing.key.alias="$ANDROID_KEYSTORE_ALIAS" \
-            -Pandroid.injected.signing.key.password="$ANDROID_KEYSTORE_ALIAS_PASSWORD"
+          ./gradlew clean assembleRelease --no-daemon
 
     artifacts:
       - app/build/outputs/**/*.apk
-
-    publishing:
-      scripts:
-        - name: Finish
-          script: |
-            echo "Build finished. Artifacts are available under $CM_ARTIFACTS_DIR"
