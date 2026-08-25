@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ContadorScreen() {
+    // rememberSaveable to preserve state across recompositions and process death when possible
     val count = rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
@@ -39,6 +40,7 @@ fun ContadorScreen() {
             verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // display the current count
             Text(
                 text = "${count.value}",
                 style = MaterialTheme.typography.displayLarge,
@@ -48,19 +50,21 @@ fun ContadorScreen() {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // Decrement button: disabled when count == 0
                 OutlinedButton(
                     onClick = { if (count.value > 0) count.value = count.value - 1 },
                     enabled = count.value > 0,
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                    colors = ButtonDefaults.buttonColors()
                 ) {
-                    Text(text = "–", color = MaterialTheme.colorScheme.onSecondary)
+                    Text(text = "–")
                 }
 
+                // Increment button
                 Button(
                     onClick = { count.value = count.value + 1 },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors()
                 ) {
-                    Text(text = "+", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(text = "+")
                 }
             }
         }
@@ -70,7 +74,7 @@ fun ContadorScreen() {
 @Preview(showBackground = true)
 @Composable
 fun ContadorPreview() {
-    com.juliaviegas.estudoskotlin.ui.theme.EstudosKotlinTheme {
+    EstudosKotlinTheme {
         ContadorScreen()
     }
 }
