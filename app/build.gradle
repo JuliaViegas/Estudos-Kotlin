@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        applicationId "com.juliaviegas.estudoskotlin"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            // Adjust proguard/minify settings as needed
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    signingConfigs {
+        release {
+            def keystoreFile = file("$rootDir/keystores/keystore.jks")
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: ""
+                keyAlias System.getenv("ANDROID_KEYSTORE_ALIAS") ?: ""
+                keyPassword System.getenv("ANDROID_KEYSTORE_ALIAS_PASSWORD") ?: ""
+            } else {
+                // If the keystore isn't present the release build will be unsigned (useful for local debug)
+                println("Keystore not found at ${keystoreFile}. Release builds may be unsigned.")
+            }
+        }
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        // The Kotlin compiler extension version may need to be adjusted to match your AGP/Kotlin versions
+        kotlinCompilerExtensionVersion '1.5.3'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    namespace 'com.juliaviegas.estudoskotlin'
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    // Compose BOM: use the BOM to manage compatible Compose versions
+    implementation platform('androidx.compose:compose-bom:2023.10.01')
+
+    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.compose.material3:material3'
+
+    // Tooling / previews
+    debugImplementation 'androidx.compose.ui:ui-tooling:1.5.0'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest:1.5.0'
+
+    // Tests
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation platform('androidx.compose:compose-bom:2023.10.01')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+}
