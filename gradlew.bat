@@ -1,5 +1,5 @@
 @echo off
-REM Minimal gradlew.bat fallback for Windows CI
+REM Minimal gradlew.bat fallback for Windows CI (no change)
 SET GRADLE_VERSION=8.4.1
 SET CACHE_DIR=%USERPROFILE%\.gradle-wrapper
 IF NOT EXIST "%CACHE_DIR%\gradle-%GRADLE_VERSION%\bin\gradle.bat" (
